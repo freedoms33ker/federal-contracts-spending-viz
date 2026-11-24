@@ -1,0 +1,229 @@
+.wrap {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.masthead {
+  background: #14233a;
+  color: #f7f3ea;
+  padding: 36px 0 32px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #d4b36a;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.masthead h1 {
+  margin: 0;
+  font-family: "Iowan Old Style", Palatino, Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.lede {
+  max-width: 40rem;
+  margin: 12px 0 0;
+  color: #d5dbe3;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 160px 160px minmax(180px, 1fr) 110px auto;
+  gap: 12px 14px;
+  align-items: end;
+  margin-top: -22px;
+  padding: 16px;
+  background: #fffcf7;
+  border: 1px solid #ddd4c4;
+  box-shadow: 0 10px 30px rgb(20 35 58 / 6%);
+}
+
+.filters label {
+  display: grid;
+  gap: 6px;
+  color: #5c6675;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.filters input,
+.filters select {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  color: #1a2332;
+  background: #fff;
+  border: 1px solid #cfc6b6;
+  border-radius: 2px;
+}
+
+.filters button,
+.pager button {
+  min-height: 40px;
+  padding: 8px 16px;
+  color: #fffcf7;
+  background: #14233a;
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.filters button:disabled,
+.pager button:disabled {
+  color: #8b93a0;
+  background: #e4ddd0;
+  cursor: not-allowed;
+}
+
+.results {
+  margin: 22px 0 48px;
+}
+
+.status,
+.error {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  background: #fffcf7;
+  border: 1px solid #ddd4c4;
+}
+
+.error {
+  color: #8d2b2b;
+  background: #f8ecec;
+  border-color: #e3c4c4;
+}
+
+.summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.summary p {
+  margin: 0;
+  color: #5c6675;
+}
+
+.page-total {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.page-total strong {
+  color: #0e4d3a;
+  font-family: "Iowan Old Style", Palatino, Georgia, serif;
+  font-size: 1.45rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  background: #fffcf7;
+  border: 1px solid #ddd4c4;
+}
+
+table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: #5c6675;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: #f7f3ea;
+  border-bottom: 1px solid #ddd4c4;
+}
+
+td {
+  border-bottom: 1px solid #eee6d8;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.num,
+td:nth-child(n + 5) {
+  white-space: nowrap;
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.amount {
+  color: #0e4d3a;
+  font-weight: 650;
+}
+
+.pager {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.pager label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5c6675;
+  font-size: 0.85rem;
+}
+
+.pager input {
+  width: 5.5rem;
+  min-height: 40px;
+  padding: 8px 10px;
+  color: #1a2332;
+  background: #fff;
+  border: 1px solid #cfc6b6;
+  border-radius: 2px;
+}
+
+.page-count {
+  color: #5c6675;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 860px) {
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filters label:nth-child(3),
+  .filters button {
+    grid-column: 1 / -1;
+  }
+
+  .summary {
+    flex-direction: column;
+  }
+}
