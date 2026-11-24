@@ -6,16 +6,13 @@ import org.springframework.stereotype.Service;
 
 import com.fedspending.contracts.client.UsaSpendingClient;
 import com.fedspending.contracts.model.dto.ContractAwardDto;
-import com.fedspending.contracts.model.dto.ContractAwardSearchRequest;
+import com.fedspending.contracts.model.dto.ContractSearchRequest;
 import com.fedspending.contracts.model.dto.PagedResponse;
 import com.fedspending.contracts.model.usaspending.SpendingByAwardRequest;
 import com.fedspending.contracts.model.usaspending.SpendingByAwardResponse;
 
 @Service
 public class ContractAwardService {
-
-    /** USAspending award type codes for contracts: BPA call, purchase order, delivery order, definitive contract. */
-    static final List<String> CONTRACT_AWARD_TYPE_CODES = List.of("A", "B", "C", "D");
 
     static final List<String> AWARD_FIELDS = List.of(
             "Award ID", "Recipient Name", "Award Amount", "Awarding Agency", "Start Date", "End Date");
@@ -26,7 +23,7 @@ public class ContractAwardService {
         this.usaSpendingClient = usaSpendingClient;
     }
 
-    public PagedResponse<ContractAwardDto> searchContractAwards(ContractAwardSearchRequest request) {
+    public PagedResponse<ContractAwardDto> searchContractAwards(ContractSearchRequest request) {
         SpendingByAwardResponse response = usaSpendingClient.searchSpendingByAward(toUsaSpendingRequest(request));
 
         if (response == null || response.results() == null) {
@@ -40,12 +37,9 @@ public class ContractAwardService {
         return new PagedResponse<>(awards, request.page(), hasNext);
     }
 
-    private static SpendingByAwardRequest toUsaSpendingRequest(ContractAwardSearchRequest request) {
-        var filters = new SpendingByAwardRequest.Filters(
-                CONTRACT_AWARD_TYPE_CODES,
-                List.of(new SpendingByAwardRequest.TimePeriod(request.startDate(), request.endDate())),
-                request.keywords());
-        return new SpendingByAwardRequest(filters, AWARD_FIELDS, request.limit(), request.page(), "Award Amount", "desc");
+    private static SpendingByAwardRequest toUsaSpendingRequest(ContractSearchRequest request) {
+        return new SpendingByAwardRequest(ContractSearchFilters.from(request), AWARD_FIELDS,
+                request.limit(), request.page(), "Award Amount", "desc");
     }
 
     private static ContractAwardDto toDto(SpendingByAwardResponse.AwardResult result) {

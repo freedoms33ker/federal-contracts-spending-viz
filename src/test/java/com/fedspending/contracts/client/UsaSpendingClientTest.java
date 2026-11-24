@@ -18,7 +18,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
 
+import com.fedspending.contracts.model.usaspending.SearchFilters;
 import com.fedspending.contracts.model.usaspending.SpendingByAwardRequest;
+import com.fedspending.contracts.model.usaspending.SpendingByRecipientRequest;
 
 class UsaSpendingClientTest {
 
@@ -35,7 +37,7 @@ class UsaSpendingClientTest {
     }
 
     @Test
-    void postsSearchAndParsesResponse() {
+    void postsAwardSearchAndParsesResponse() {
         server.expect(requestTo(BASE_URL + UsaSpendingClient.SPENDING_BY_AWARD_PATH))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().json("""
@@ -50,7 +52,7 @@ class UsaSpendingClientTest {
                          "page_metadata": {"page": 1, "hasNext": true}}
                         """, MediaType.APPLICATION_JSON));
 
-        var response = client.searchSpendingByAward(sampleRequest());
+        var response = client.searchSpendingByAward(sampleAwardRequest());
 
         assertThat(response.results()).singleElement()
                 .satisfies(result -> {
@@ -62,19 +64,51 @@ class UsaSpendingClientTest {
     }
 
     @Test
+    void postsRecipientSearchAndParsesResponse() {
+        server.expect(requestTo(BASE_URL + UsaSpendingClient.SPENDING_BY_RECIPIENT_PATH))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("""
+                        {"filters": {"award_type_codes": ["A"]}, "limit": 100, "page": 3}
+                        """))
+                .andRespond(withSuccess("""
+                        {"category": "recipient", "limit": 100,
+                         "results": [{"amount": 34098766945.4, "recipient_id": "6cf5fb1b-C",
+                                      "name": "LOCKHEED MARTIN CORPORATION", "code": "008016958",
+                                      "uei": "G4KDGE4JFFK7", "total_outlays": null}],
+                         "page_metadata": {"page": 3, "next": 4, "previous": 2, "hasNext": true, "hasPrevious": true}}
+                        """, MediaType.APPLICATION_JSON));
+
+        var response = client.searchSpendingByRecipient(
+                new SpendingByRecipientRequest(sampleFilters(), 100, 3));
+
+        assertThat(response.results()).singleElement()
+                .satisfies(result -> {
+                    assertThat(result.recipientId()).isEqualTo("6cf5fb1b-C");
+                    assertThat(result.name()).isEqualTo("LOCKHEED MARTIN CORPORATION");
+                    assertThat(result.uei()).isEqualTo("G4KDGE4JFFK7");
+                    assertThat(result.amount()).isEqualByComparingTo("34098766945.4");
+                });
+        assertThat(response.pageMetadata().hasNext()).isTrue();
+        server.verify();
+    }
+
+    @Test
     void wrapsUpstreamErrors() {
         server.expect(requestTo(BASE_URL + UsaSpendingClient.SPENDING_BY_AWARD_PATH))
                 .andRespond(withServerError());
 
-        assertThatThrownBy(() -> client.searchSpendingByAward(sampleRequest()))
+        assertThatThrownBy(() -> client.searchSpendingByAward(sampleAwardRequest()))
                 .isInstanceOf(UsaSpendingClientException.class);
     }
 
-    private static SpendingByAwardRequest sampleRequest() {
-        var filters = new SpendingByAwardRequest.Filters(
+    private static SpendingByAwardRequest sampleAwardRequest() {
+        return new SpendingByAwardRequest(sampleFilters(), List.of("Award ID"), 10, 1, "Award Amount", "desc");
+    }
+
+    private static SearchFilters sampleFilters() {
+        return new SearchFilters(
                 List.of("A"),
-                List.of(new SpendingByAwardRequest.TimePeriod(LocalDate.of(2024, 10, 1), LocalDate.of(2025, 9, 30))),
+                List.of(new SearchFilters.TimePeriod(LocalDate.of(2024, 10, 1), LocalDate.of(2025, 9, 30))),
                 List.of());
-        return new SpendingByAwardRequest(filters, List.of("Award ID"), 10, 1, "Award Amount", "desc");
     }
 }

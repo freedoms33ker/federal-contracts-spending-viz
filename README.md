@@ -9,6 +9,11 @@ Spring Boot 4 (Java 17) service for federal contract spending data, backed by th
 curl -X POST localhost:8080/api/v1/contracts/search \
   -H 'Content-Type: application/json' \
   -d '{"startDate":"2024-10-01","endDate":"2025-09-30","limit":5}'
+
+# Companies ranked by contract spending, up to 100 per page
+curl -X POST localhost:8080/api/v1/contracts/recipients/search \
+  -H 'Content-Type: application/json' \
+  -d '{"startDate":"2024-10-01","endDate":"2025-09-30","limit":100,"page":1}'
 ```
 
 ## Layers (`com.fedspending.contracts`)

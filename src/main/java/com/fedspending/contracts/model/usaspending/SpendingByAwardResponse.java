@@ -25,8 +25,4 @@ public record SpendingByAwardResponse(
             @JsonProperty("Start Date") LocalDate startDate,
             @JsonProperty("End Date") LocalDate endDate) {
     }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public record PageMetadata(int page, boolean hasNext) {
-    }
 }

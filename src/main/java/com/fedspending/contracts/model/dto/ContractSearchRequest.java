@@ -9,14 +9,14 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record ContractAwardSearchRequest(
+public record ContractSearchRequest(
         @NotNull LocalDate startDate,
         @NotNull LocalDate endDate,
         List<@Size(min = 3) String> keywords,
         @Min(1) @Max(100) Integer limit,
         @Min(1) Integer page) {
 
-    public ContractAwardSearchRequest {
+    public ContractSearchRequest {
         keywords = keywords == null ? List.of() : List.copyOf(keywords);
         limit = limit == null ? 10 : limit;
         page = page == null ? 1 : page;

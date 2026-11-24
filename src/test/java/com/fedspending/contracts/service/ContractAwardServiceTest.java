@@ -17,7 +17,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fedspending.contracts.client.UsaSpendingClient;
-import com.fedspending.contracts.model.dto.ContractAwardSearchRequest;
+import com.fedspending.contracts.model.dto.ContractSearchRequest;
+import com.fedspending.contracts.model.usaspending.PageMetadata;
 import com.fedspending.contracts.model.usaspending.SpendingByAwardRequest;
 import com.fedspending.contracts.model.usaspending.SpendingByAwardResponse;
 
@@ -35,9 +36,9 @@ class ContractAwardServiceTest {
         var result = new SpendingByAwardResponse.AwardResult("W91-001", "Acme Corp", new BigDecimal("42.50"),
                 "Department of Defense", LocalDate.of(2025, 1, 1), LocalDate.of(2025, 6, 30));
         given(usaSpendingClient.searchSpendingByAward(any())).willReturn(new SpendingByAwardResponse(
-                List.of(result), new SpendingByAwardResponse.PageMetadata(2, false)));
+                List.of(result), new PageMetadata(2, false)));
 
-        var request = new ContractAwardSearchRequest(
+        var request = new ContractSearchRequest(
                 LocalDate.of(2024, 10, 1), LocalDate.of(2025, 9, 30), List.of("cyber"), 25, 2);
         var response = contractAwardService.searchContractAwards(request);
 
@@ -62,7 +63,7 @@ class ContractAwardServiceTest {
     void returnsEmptyPageWhenUpstreamHasNoResults() {
         given(usaSpendingClient.searchSpendingByAward(any())).willReturn(new SpendingByAwardResponse(null, null));
 
-        var request = new ContractAwardSearchRequest(
+        var request = new ContractSearchRequest(
                 LocalDate.of(2024, 10, 1), LocalDate.of(2025, 9, 30), null, null, null);
         var response = contractAwardService.searchContractAwards(request);
 

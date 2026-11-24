@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fedspending.contracts.model.dto.ContractAwardDto;
-import com.fedspending.contracts.model.dto.ContractAwardSearchRequest;
+import com.fedspending.contracts.model.dto.ContractSearchRequest;
 import com.fedspending.contracts.model.dto.PagedResponse;
 import com.fedspending.contracts.service.ContractAwardService;
 
@@ -23,7 +23,7 @@ public class ContractAwardController {
     }
 
     @PostMapping("/search")
-    public PagedResponse<ContractAwardDto> search(@Valid @RequestBody ContractAwardSearchRequest request) {
+    public PagedResponse<ContractAwardDto> search(@Valid @RequestBody ContractSearchRequest request) {
         return contractAwardService.searchContractAwards(request);
     }
 }
